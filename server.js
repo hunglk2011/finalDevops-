@@ -3,7 +3,7 @@ const app = express();
 const PORT = 5000;
 const userData = require("./MOCK_DATA.json");
 const graphql = require("graphql");
-const { GraphQLObjectType, GraphQLSchema, GraphQLList, GraphQLID, GraphQLInt, GraphQLString } = graphql;
+const { GraphQLObjectType, GraphQLSchema, GraphQLList, GraphQLInt, GraphQLString } = graphql;
 const { graphqlHTTP } = require("express-graphql");
 
 // Serve static files from the 'public' folder
@@ -53,15 +53,15 @@ const Mutation = new GraphQLObjectType({
         password: { type: GraphQLString },
       },
       resolve(parent, args) {
-        userData.push({
+        const newUser = {
           id: userData.length + 1,
           firstName: args.firstName,
           lastName: args.lastName,
           email: args.email,
           password: args.password,
-        });
+        };
         userData.push(newUser);
-        return args;
+        return newUser;
       },
     },
   },
@@ -76,20 +76,27 @@ app.use(
     graphiql: true,
   })
 );
-app.use(express.static("public"));
+app.get("/rest/getUserById", (req, res) => {
+  const userId = parseInt(req.query.id, 10); 
+  const user = userData.find((user) => user.id === userId);
 
+  if (user) {
+    res.json(user); 
+  } else {
+    res.status(404).json({ message: "User not found" }); 
+  }
+});
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/public/index.html"); // Serve home page
+  res.sendFile(__dirname + "/public/index.html"); 
 });
 
 app.get("/rest/getAllUsers", (req, res) => {
   res.json(userData); // Send data as JSON response
 });
-app.get("/users", (req, res) => {
-    res.sendFile(__dirname + "/public/user-list.html"); // Ensure this path is correct
-  });
-  
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.get("/users", (req, res) => {
+  res.sendFile(__dirname + "/public/user-list.html"); // Ensure this path is correct
 });
+
+// Export app for testing
+module.exports = app;
