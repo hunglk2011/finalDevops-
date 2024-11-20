@@ -2,19 +2,37 @@ name: CICD
 
 on:
   push:
-    branches: [main,master]
-    
+    branches: 
+      - main
+      - master
+
 jobs:
-  build:
-    runs-on: [ubuntu-latest]
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
     steps:
+      # Step 1: Checkout the source code
       - name: Checkout Source
         uses: actions/checkout@v3
+        
+      # Step 2: Set up Node.js version (18.x in this case)
       - name: Set Node.js 18.x
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
+
+      # Step 3: Install Dependencies
       - name: Install Dependencies
-        run : npm install
+        run: npm install
+
+      # Step 4: Run tests
       - name: Test Project
         run: npm test
+
+      # Step 5: Deploy to Azure App Service
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: finalDevops  # Replace with your Azure App Service name
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}  # Make sure to add the Azure Publish Profile secret
+          package: .  # Path to the directory to be deployed (in this case, the current directory)
