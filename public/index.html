@@ -1,0 +1,28 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        function goToUserList() {
+            window.location.href = '/users';
+        }
+    </script>
+</head>
+<body>
+    <div class="main-container">
+        <h1 class="main-heading">Welcome to the Home Page</h1>
+        <button class="get-start" onclick="window.location.href='/user-list.html'">View User List</button>
+        <button class="get-start" onclick="window.location.href='/add-user.html'">Add User</button>
+        <div id="user-list"></div>
+    </div>
+
+    <!-- Optional: You can add elements like the floating circles here -->
+    <div class="element1"></div>
+    <div class="element2"></div>
+    <div class="element3"></div>
+</body>
+</html>
