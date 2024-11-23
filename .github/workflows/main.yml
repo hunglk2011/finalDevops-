@@ -30,21 +30,42 @@ jobs:
       # Step 4: Run tests
       - name: test
         run: npm test
+       # Step 5: Build project
+      - name: Build Project
+        run: npm run build
+
+     # Step 6: Save Build Artifacts
+      - name: Save Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+         name: build-artifacts
+         path: ./build 
 
   deploy:
     runs-on: ubuntu-latest
     needs: build  # Đảm bảo chỉ chạy sau khi job 'build' thành công
-    if: github.ref == 'refs/heads/main'  # Chỉ chạy nếu nhánh là 'main'
+    if: github.ref == 'refs/heads/main' 
 
     steps:
       # Step 1: Checkout the source code
       - name: Checkout Source
         uses: actions/checkout@v3
 
-      # Step 2: Deploy to Azure App Service
-      - name: Deploy to Azure App Service
-        uses: azure/webapps-deploy@v2
+      # Step 2: Download Artifacts
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
         with:
-          app-name: finalDevops  # Thay bằng tên dịch vụ Azure của bạn
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}  # Thêm Azure Publish Profile secret
-          package: .  # Đường dẫn thư mục triển khai (ở đây là thư mục hiện tại)
+          name: build-artifacts
+
+      # Step 3: Deploy to Render
+      - name: Deploy to Render
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          curl -X POST https://api.render.com/deploy \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "serviceId": "srv-ct0pctd6l47c73b7t9q0",
+              "clearCache": true
+            }'
