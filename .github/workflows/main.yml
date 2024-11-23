@@ -30,16 +30,13 @@ jobs:
       # Step 4: Run tests
       - name: test
         run: npm test
-       # Step 5: Build project
-      - name: Build Project
-        run: npm run build
 
-     # Step 6: Save Build Artifacts
+     # Step 5: Save Build Artifacts
       - name: Save Artifacts
         uses: actions/upload-artifact@v3
         with:
          name: build-artifacts
-         path: ./build 
+         path: .
 
   deploy:
     runs-on: ubuntu-latest
