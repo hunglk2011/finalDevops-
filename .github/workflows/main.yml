@@ -37,11 +37,11 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
          name: build-artifacts
-         path: .
+         path: ./public
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build  # Đảm bảo chỉ chạy sau khi job 'build' thành công
+    needs: build
     if: github.ref == 'refs/heads/main' 
 
     steps:
