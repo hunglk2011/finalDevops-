@@ -64,6 +64,6 @@ jobs:
             -H "Authorization: Bearer $RENDER_API_KEY" \
             -H "Content-Type: application/json" \
             -d '{
-              "serviceId": "srv-ct0pctd6l47c73b7t9q0",
+              "serviceId": "srv-ct0qcbm8ii6s73f8si10",
               "clearCache": true
             }'
